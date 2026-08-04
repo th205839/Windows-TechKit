@@ -13,6 +13,9 @@ $menu = Join-Path $Root "menu/MainMenu.ps1"
 
 if (Test-Path $menu) {
     . $menu
+    if (Get-Command Start-MainMenu -ErrorAction SilentlyContinue) {
+        Start-MainMenu
+    }
 } else {
     Write-Host "Menu system not found."
 }
