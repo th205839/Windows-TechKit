@@ -1,14 +1,29 @@
 function Test-NetworkStatus {
-    Write-Host "Checking network connectivity..."
+    [CmdletBinding()]
+    param()
 
-    $result = Test-Connection -ComputerName 8.8.8.8 -Count 2 -Quiet
+    $result = $false
+    if (Get-Command Test-Connection -ErrorAction SilentlyContinue) {
+        $result = Test-Connection -ComputerName '8.8.8.8' -Count 2 -Quiet
+    }
 
-    if ($result) {
-        Write-Host "Network available."
+    $summary = [ordered]@{
+        Timestamp = (Get-Date).ToString('o')
+        Status = if ($result) { 'Available' } else { 'Unavailable' }
+        Gateway = $null
+        DNS = $null
     }
-    else {
-        Write-Host "Network unavailable."
+
+    if (Get-Command Get-NetIPConfiguration -ErrorAction SilentlyContinue) {
+        $config = Get-NetIPConfiguration -ErrorAction SilentlyContinue
+        if ($config) {
+            $summary.Gateway = $config.IPv4DefaultGateway[0].NextHop
+            $summary.DNS = $config.DnsServer[0].Address
+        }
     }
+
+    Write-Host ('Network status: {0}' -f $summary.Status) -ForegroundColor Green
+    return [pscustomobject]$summary
 }
 
 Export-ModuleMember -Function Test-NetworkStatus
