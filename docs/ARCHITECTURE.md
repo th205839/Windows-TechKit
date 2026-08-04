@@ -2,15 +2,26 @@
 
 ## Core
 - Launcher
-- Menu
-- Logger
+- Runtime
+- Dashboard
 - Module Manager
-- Security
+- Reporting
+- Settings Manager
+- Branding
+- Health
+- Client Registry
+- Operations
+- USB layout support
 
 ## Modules
-- Repair
+- Hardware
 - Network
-- Update
+- Repair
 - Drivers
 - Backup
+- Recovery
+- Security
+- Inventory
+- Support
 - Tweaks
+- Updates

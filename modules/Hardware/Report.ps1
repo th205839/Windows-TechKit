@@ -1,5 +1,12 @@
 # Hardware Module Report
 
 function New-HardwareReport {
-    Write-Host "Generating hardware report..."
+    [CmdletBinding()]
+    param([string]$Summary = 'Hardware report generated')
+
+    return [pscustomobject]@{
+        Module = 'Hardware'
+        Summary = $Summary
+        Generated = (Get-Date).ToString('o')
+    }
 }

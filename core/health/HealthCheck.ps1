@@ -2,8 +2,19 @@
 # Base system validation module
 
 function Invoke-TechKitHealthCheck {
-    return @{
-        Status = "Ready"
-        Timestamp = Get-Date
+    [CmdletBinding()]
+    param()
+
+    $status = [ordered]@{
+        Status = 'Ready'
+        Timestamp = (Get-Date).ToString('o')
+        Admin = $false
+        Environment = Get-TechKitEnvironment
     }
+
+    if (Get-Command Test-AdminRights -ErrorAction SilentlyContinue) {
+        $status.Admin = Test-AdminRights
+    }
+
+    return [pscustomobject]$status
 }
