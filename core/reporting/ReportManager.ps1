@@ -6,10 +6,12 @@ function New-TechKitReport {
     )
 
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    return @"
-$Title
-Generated: $timestamp
-"@
+
+    return @{
+        Title = $Title
+        Generated = $timestamp
+        Status = "Ready"
+    }
 }
 
 Export-ModuleMember -Function New-TechKitReport
