@@ -1,0 +1,20 @@
+GUIA RÁPIDO PARA USO NO PENDRIVE
+===============================
+
+1. Copie a pasta usb-kit para o pendrive.
+2. Coloque a ISO do Windows 10 ou Windows 11 na pasta isos/.
+3. No PowerShell, execute:
+   ./scripts/Start-USB-Toolkit.ps1
+4. Para preparar uma unidade específica:
+   ./scripts/Prepare-USB-Drive.ps1 -DriveLetter E:
+5. Para ver o guia de instalação:
+   ./scripts/Install-Windows-Guide.ps1
+
+Objetivo:
+- Instalar ou reparar o Windows 10/11
+- Realizar diagnóstico e manutenção
+- Fazer backup e restauração de drivers
+- Gerar relatórios e logs
+
+Observação:
+O pendrive deve ser usado com permissão administrativa em máquinas Windows.

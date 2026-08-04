@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "ok",
+    "Inventory":  {
+                      "ComputerName":  "DESKTOP-UGU5OCU",
+                      "UserName":  "Prontidao",
+                      "OS":  "Windows_NT",
+                      "Timestamp":  "2026-08-04T16:08:59.1964890-03:00",
+                      "Manufacturer":  "To Be Filled By O.E.M.",
+                      "Model":  "To Be Filled By O.E.M.",
+                      "BIOSVersion":  "P1.10"
+                  },
+    "Hardware":  {
+                     "Timestamp":  "2026-08-04T16:08:59.6559422-03:00",
+                     "ComputerName":  "DESKTOP-UGU5OCU",
+                     "Status":  "Completed",
+                     "Manufacturer":  "To Be Filled By O.E.M.",
+                     "Model":  "To Be Filled By O.E.M."
+                 }
+}

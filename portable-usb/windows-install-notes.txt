@@ -1,0 +1,17 @@
+Windows 10/11 Installation Workflow
+=================================
+
+1. Copy this folder to a bootable USB drive.
+2. Put your licensed Windows 10 or Windows 11 ISO files in the isos/ folder.
+3. Use the USB to boot the target machine.
+4. Start the Windows Setup from the USB.
+5. Use Windows-TechKit from the same USB to:
+   - diagnose hardware and network
+   - run repair workflows
+   - backup and restore drivers
+   - create reports and logs
+   - prepare the machine for deployment
+
+Recommended usage:
+- Use Windows 10 ISO for older hardware
+- Use Windows 11 ISO for newer hardware with TPM 2.0 support
