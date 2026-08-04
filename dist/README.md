@@ -30,25 +30,6 @@ For non-interactive validation:
 ./Start-TechKit.ps1 -Mode noninteractive
 ```
 
-## Portable USB / pendrive usage
-To use the toolkit from a USB drive:
-
-1. Copy the repository contents to the pendrive, or use the prepared distribution folder under dist/.
-2. Open PowerShell in the copied folder.
-3. Run:
-
-```powershell
-./Start-TechKit.ps1
-```
-
-If you want to deploy to a specific drive letter from Windows PowerShell:
-
-```powershell
-./dist/USB-Deploy.ps1 -DriveLetter E:
-```
-
-This will create a portable folder named Windows-TechKit on the target drive.
-
 ## Documentation
 - docs/ARCHITECTURE.md
 - docs/INTERNAL_REPORT.md
