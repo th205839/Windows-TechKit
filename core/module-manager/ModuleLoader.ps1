@@ -16,4 +16,10 @@ function Load-TechKitModules {
     foreach ($module in $modules) {
         Write-Host "Module detected: $($module.Name)"
     }
+
+    return $modules
+}
+
+function Get-TechKitModuleCount {
+    return (Get-TechKitModules).Count
 }
