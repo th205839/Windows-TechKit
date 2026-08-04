@@ -9,7 +9,15 @@ if (Test-Path $config) {
     Import-PowerShellDataFile $config | Out-Null
 }
 
-$menu = Join-Path $Root "menu/MainMenu.ps1"
+$loader = Join-Path $Root "core/module-manager/ModuleLoader.ps1"
+if (Test-Path $loader) {
+    . $loader
+    if (Get-Command Load-TechKitModules -ErrorAction SilentlyContinue) {
+        Load-TechKitModules
+    }
+}
+
+$menu = Join-Path $Root "core/menu/MainMenu.ps1"
 
 if (Test-Path $menu) {
     . $menu
