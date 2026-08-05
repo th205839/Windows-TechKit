@@ -1,0 +1,11 @@
+GUIA TECNICO USB
+================
+
+1. Copie esta pasta para o pendrive.
+2. Coloque a ISO do Windows 10 ou 11 na pasta isos/.
+3. Execute Start.bat ou Start.cmd.
+4. Use as ferramentas para diagnostico, reparo, backup e relatorios.
+
+Recomendacao:
+- Windows 10 para hardware mais antigo
+- Windows 11 para hardware recente com suporte a TPM 2.0

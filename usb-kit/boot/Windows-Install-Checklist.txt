@@ -1,0 +1,8 @@
+Checklist para pendrive bootável + toolkit
+========================================
+
+1. Crie um pendrive bootável com a ISO do Windows 10/11.
+2. Copie a pasta usb-kit para o pendrive ou use o script Make-Bootable-USB.ps1.
+3. Coloque a ISO do Windows na pasta isos/.
+4. Use Start.bat ou Start.cmd na raiz do pendrive para abrir o toolkit.
+5. Use as ferramentas para diagnóstico, reparo, backup e relatórios.
