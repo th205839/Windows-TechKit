@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "modules": [
+    {
+      "id": "System",
+      "name": "Sistema",
+      "category": "Diagnóstico",
+      "entryPoint": "Start.ps1",
+      "enabled": true
+    },
+    {
+      "id": "Network",
+      "name": "Rede",
+      "category": "Diagnóstico",
+      "entryPoint": "Start.ps1",
+      "enabled": true
+    },
+    {
+      "id": "Windows",
+      "name": "Manutenção do Windows",
+      "category": "Manutenção",
+      "entryPoint": "Start.ps1",
+      "enabled": true
+    }
+  ]
+}
