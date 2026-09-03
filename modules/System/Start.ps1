@@ -1,5 +1,7 @@
 [CmdletBinding()]
-param()
+param(
+    [switch]$Quiet
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -54,12 +56,17 @@ function Get-TechKitSystemSnapshot {
     }
 }
 
-Write-Host "`n=== Windows-TechKit | Inventário do Sistema ===" -ForegroundColor Cyan
 $snapshot = Get-TechKitSystemSnapshot
-$snapshot | Select-Object ComputerName, Manufacturer, Model, Windows, Version, Build, Architecture, TotalMemoryGB, CpuName, CpuCores, CpuLogicalProcessors, BiosVersion, LastBoot | Format-List
-Write-Host 'Discos:' -ForegroundColor DarkCyan
-$snapshot.LogicalDisks | Format-Table DeviceID, VolumeName, FileSystem, SizeGB, FreeGB -AutoSize
-Write-Host 'Memória:' -ForegroundColor DarkCyan
-$snapshot.MemoryModules | Format-Table Manufacturer, PartNumber, CapacityGB, Speed, ConfiguredClockSpeed -AutoSize
-Write-Host 'GPU:' -ForegroundColor DarkCyan
-$snapshot.Gpu | Format-Table Name, DriverVersion, AdapterMemoryGB -AutoSize
+
+if (-not $Quiet) {
+    Write-Host "`n=== Windows-TechKit | Inventário do Sistema ===" -ForegroundColor Cyan
+    $snapshot | Select-Object ComputerName, Manufacturer, Model, Windows, Version, Build, Architecture, TotalMemoryGB, CpuName, CpuCores, CpuLogicalProcessors, BiosVersion, LastBoot | Format-List
+    Write-Host 'Discos:' -ForegroundColor DarkCyan
+    $snapshot.LogicalDisks | Format-Table DeviceID, VolumeName, FileSystem, SizeGB, FreeGB -AutoSize
+    Write-Host 'Memória:' -ForegroundColor DarkCyan
+    $snapshot.MemoryModules | Format-Table Manufacturer, PartNumber, CapacityGB, Speed, ConfiguredClockSpeed -AutoSize
+    Write-Host 'GPU:' -ForegroundColor DarkCyan
+    $snapshot.Gpu | Format-Table Name, DriverVersion, AdapterMemoryGB -AutoSize
+}
+
+return $snapshot
