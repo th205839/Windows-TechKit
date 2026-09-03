@@ -1,5 +1,7 @@
 [CmdletBinding()]
-param()
+param(
+    [switch]$Quiet
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -31,10 +33,18 @@ function Get-TechKitDiskSnapshot {
     }
 }
 
-Write-Host "`n=== Windows-TechKit | Discos ===" -ForegroundColor Cyan
 $snapshot = Get-TechKitDiskSnapshot
-$snapshot.LogicalDisks | Format-Table Drive, VolumeName, FileSystem, SizeGB, FreeGB, FreePercent -AutoSize
-if ($snapshot.PhysicalDisks.Count -gt 0) {
-    Write-Host 'Saúde dos discos físicos:' -ForegroundColor DarkCyan
-    $snapshot.PhysicalDisks | Select-Object FriendlyName, MediaType, BusType, HealthStatus, OperationalStatus, @{Name='SizeGB';Expression={ if ($_.Size) { [math]::Round($_.Size / 1GB, 2) } else { $null } }} | Format-Table -AutoSize
+
+if (-not $Quiet) {
+    Write-Host "`n=== Windows-TechKit | Diagnóstico de Discos ===" -ForegroundColor Cyan
+    $snapshot.LogicalDisks | Format-Table Drive, VolumeName, FileSystem, SizeGB, FreeGB, FreePercent -AutoSize
+    if ($snapshot.PhysicalDisks.Count -gt 0) {
+        Write-Host 'Saúde dos discos físicos:' -ForegroundColor DarkCyan
+        $snapshot.PhysicalDisks |
+            Select-Object FriendlyName, MediaType, BusType, HealthStatus, OperationalStatus,
+                @{Name='SizeGB';Expression={ if ($_.Size) { [math]::Round($_.Size / 1GB, 2) } else { $null } }} |
+            Format-Table -AutoSize
+    }
 }
+
+return $snapshot
