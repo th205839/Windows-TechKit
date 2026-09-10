@@ -8,3 +8,11 @@ Desktop.ini
 # Development
 .vscode/
 .env
+
+# Runtime logs and test artifacts (do not commit generated logs/reports)
+core/logs/
+core/logs/**
+core/logs/reports/
+core/logs/reports/**
+# Test export file created by test suite
+core/logs/reports/test-export.json
