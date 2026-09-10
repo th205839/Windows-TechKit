@@ -217,9 +217,6 @@ function Invoke-TechKitModule {
             Default {
                 $result.Note = 'No known fallback contract for this module.'
             }
-            Default {
-                $result.Note = 'No known fallback contract for this module.'
-            }
         }
     }
     catch {
