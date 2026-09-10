@@ -26,13 +26,19 @@ function New-TechKitBackup {
     $targetPath = Join-Path $DestinationPath $backupName
     New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
 
-    Copy-Item -Path $SourcePath -Destination $targetPath -Recurse -Force
+    try {
+        Copy-Item -Path $SourcePath -Destination $targetPath -Recurse -Force
+    }
+    catch {
+        throw "Backup operation failed: $($_.Exception.Message)"
+    }
 
     return [pscustomobject]@{
         BackupName = $backupName
         SourcePath = $SourcePath
         DestinationPath = $targetPath
         Timestamp = (Get-Date).ToString('o')
+        Status = 'Completed'
     }
 }
 
