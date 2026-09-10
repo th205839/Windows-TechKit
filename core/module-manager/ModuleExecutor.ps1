@@ -36,9 +36,13 @@ function Invoke-TechKitModule {
         try {
             # dot-source Start.ps1 so it can return objects or write-host; capture return
             . $startScript
-            # If module script wrote to output, try to return last object available in the session
+            # If module script wrote to output, capture it. If no Apply requested, return it immediately.
             if (Get-Variable -Name 'result' -Scope 1 -ErrorAction SilentlyContinue) {
-                return Get-Variable -Name 'result' -Scope 1 -ValueOnly
+                $startResult = Get-Variable -Name 'result' -Scope 1 -ValueOnly
+                if (-not $Apply) {
+                    return $startResult
+                }
+                # When Apply is requested, keep startResult for inclusion and continue to execution paths below.
             }
             # Start.ps1 did not produce a result object; fall through to known fallback contracts below.
         }
