@@ -18,6 +18,11 @@ function Invoke-TechKitModule {
         throw "Module path not found: $modulePath"
     }
 
+    # Import any module files (.psm1) inside the module folder so Export-ModuleMember runs in module context.
+    Get-ChildItem -Path $modulePath -Filter *.psm1 -File -ErrorAction SilentlyContinue | ForEach-Object {
+        try { Import-Module -Name $_.FullName -Force -Scope Global -ErrorAction SilentlyContinue } catch {}
+    }
+
     # Prefer an explicit Start.ps1 that returns a safe object.
     $startScript = Join-Path $modulePath 'Start.ps1'
     if (Test-Path $startScript) {
@@ -33,12 +38,6 @@ function Invoke-TechKitModule {
         catch {
             throw "Module '$Name' failed to initialize: $($_.Exception.Message)"
         }
-    }
-
-    # Fallback: call known function contracts without applying destructive actions
-    # Import any module files (.psm1) inside the module folder so Export-ModuleMember runs in module context.
-    Get-ChildItem -Path $modulePath -Filter *.psm1 -File -ErrorAction SilentlyContinue | ForEach-Object {
-        try { Import-Module -Name $_.FullName -Force -Scope Global -ErrorAction SilentlyContinue } catch {}
     }
 
     $result = [ordered]@{
