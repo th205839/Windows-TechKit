@@ -7,6 +7,14 @@ function New-SupportTicket {
         [string]$Issue
     )
 
+    if ([string]::IsNullOrWhiteSpace($ClientName)) {
+        throw 'ClientName cannot be empty.'
+    }
+
+    if ([string]::IsNullOrWhiteSpace($Issue)) {
+        throw 'Issue cannot be empty.'
+    }
+
     return [pscustomobject]@{
         TicketId = ('TKT-{0}' -f [guid]::NewGuid().ToString('N').Substring(0, 8))
         ClientName = $ClientName
