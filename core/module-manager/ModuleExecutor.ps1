@@ -23,6 +23,11 @@ function Invoke-TechKitModule {
         try { Import-Module -Name $_.FullName -Force -Scope Global -ErrorAction SilentlyContinue } catch {}
     }
 
+    # Dot-source non-start script files (*.ps1) in the module so they can define functions used by Start.ps1 (Actions, Report, etc.)
+    Get-ChildItem -Path $modulePath -Filter *.ps1 -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne 'Start.ps1' } | ForEach-Object {
+        try { . $_.FullName } catch {}
+    }
+
     # Prefer an explicit Start.ps1 that returns a safe object.
     $startScript = Join-Path $modulePath 'Start.ps1'
     if (Test-Path $startScript) {
