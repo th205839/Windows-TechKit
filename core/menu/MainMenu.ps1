@@ -36,16 +36,35 @@ function Show-MainMenu {
         }
         '4' {
             Write-TechLog -Message 'Repair workflow selected'
-            & (Join-Path $PSScriptRoot '../launcher/StartupPipeline.ps1')
+            Write-Host 'Preparing repair plan...' -ForegroundColor Cyan
+            if (Get-Command Invoke-TechKitModule -ErrorAction SilentlyContinue) {
+                $res = Invoke-TechKitModule -Name 'Repair'
+                $null = Export-TechKitReport -Data ([pscustomobject]$res) -FileName 'repair-plan'
+            }
+            else {
+                Write-Warning 'Module executor not available.'
+            }
         }
         '5' {
             Write-TechLog -Message 'Network workflow selected'
+            if (Get-Command Invoke-TechKitModule -ErrorAction SilentlyContinue) {
+                $res = Invoke-TechKitModule -Name 'Network'
+                $null = Export-TechKitReport -Data ([pscustomobject]$res) -FileName 'network-status'
+            }
         }
         '6' {
             Write-TechLog -Message 'Inventory workflow selected'
+            if (Get-Command Invoke-TechKitModule -ErrorAction SilentlyContinue) {
+                $res = Invoke-TechKitModule -Name 'Inventory'
+                $null = Export-TechKitReport -Data ([pscustomobject]$res) -FileName 'inventory-snapshot'
+            }
         }
         '7' {
             Write-TechLog -Message 'Support workflow selected'
+            if (Get-Command Invoke-TechKitModule -ErrorAction SilentlyContinue) {
+                $res = Invoke-TechKitModule -Name 'Support'
+                $null = Export-TechKitReport -Data ([pscustomobject]$res) -FileName 'support-init'
+            }
         }
         '8' {
             Write-Host 'Exiting Windows-TechKit.' -ForegroundColor Yellow
