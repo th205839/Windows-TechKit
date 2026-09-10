@@ -13,11 +13,15 @@ Describe 'Backup and drivers modules' {
         Set-Content -Path (Join-Path $source 'sample.txt') -Value 'hello'
 
         $result = New-TechKitBackup -SourcePath $source -DestinationPath $destination
-        $result.BackupName | Should -Not -BeNullOrEmpty
+        if ([string]::IsNullOrWhiteSpace($result.BackupName)) {
+            throw 'BackupName should not be empty'
+        }
     }
 
     It 'returns a driver inventory object' {
         $result = Get-TechKitDriverInventory
-        $result.DriverCount | Should -BeGreaterThanOrEqual 0
+        if ($null -eq $result -or $result.DriverCount -lt 0) {
+            throw 'Driver inventory did not return a valid object'
+        }
     }
 }

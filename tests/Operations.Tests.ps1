@@ -9,16 +9,22 @@ Describe 'Windows-TechKit operations' {
 
     It 'runs diagnostics' {
         $result = Invoke-TechKitDiagnostics
-        $result.ComputerName | Should -Not -BeNullOrEmpty
+        if ([string]::IsNullOrWhiteSpace($result.ComputerName)) {
+            throw 'ComputerName should not be empty'
+        }
     }
 
     It 'runs maintenance workflow' {
         $result = Invoke-TechKitMaintenance -ClientName 'Client'
-        $result.ClientName | Should -Be 'Client'
+        if ($result.ClientName -ne 'Client') {
+            throw 'Maintenance client name did not match expectation'
+        }
     }
 
     It 'exports a report' {
         $result = Export-TechKitReport -Data ([pscustomobject]@{ Status = 'ok' }) -FileName 'test-export'
-        $result | Should -Match 'test-export.json'
+        if ($result -notmatch 'test-export.json') {
+            throw 'Report export path did not match expectation'
+        }
     }
 }

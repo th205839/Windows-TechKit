@@ -13,6 +13,7 @@ $Root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 . (Join-Path $Root 'core/branding/Branding.ps1')
 . (Join-Path $Root 'core/runtime/Environment.ps1')
 . (Join-Path $Root 'core/runtime/Runtime.ps1')
+. (Join-Path $Root 'core/security/AdminCheck.ps1')
 . (Join-Path $Root 'core/health/HealthCheck.ps1')
 . (Join-Path $Root 'core/logger/Logger.ps1')
 . (Join-Path $Root 'core/settings-manager/Settings.ps1')
@@ -37,13 +38,17 @@ if (Test-Path $config) {
 
 $runtime = Initialize-TechKitRuntime
 $health = Invoke-TechKitHealthCheck
+$modules = Get-TechKitModules
+
 Set-TechKitSetting -Name 'Mode' -Value $Mode
 Set-TechKitSetting -Name 'RootPath' -Value $Root
 Set-TechKitSetting -Name 'Runtime' -Value $runtime
 Set-TechKitSetting -Name 'Health' -Value $health
+Set-TechKitSetting -Name 'Modules' -Value $modules
 
 Write-TechLog -Message ('Runtime ready: {0}' -f $runtime.Status)
 Write-TechLog -Message ('Health status: {0}' -f $health.Status)
+Write-TechLog -Message ('Modules discovered: {0}' -f (($modules | ForEach-Object { $_.Name }) -join ', '))
 
 if ($Mode -eq 'noninteractive') {
     Write-Host 'Non-interactive mode enabled. Completed startup checks.'

@@ -8,11 +8,15 @@ Describe 'Repair and network modules' {
 
     It 'returns a repair plan' {
         $result = Invoke-WindowsRepair
-        $result.Status | Should -Be 'Completed'
+        if ($result.Status -ne 'Completed') {
+            throw 'Repair status did not match expected value'
+        }
     }
 
     It 'returns network status' {
         $result = Test-NetworkStatus
-        $result.Status | Should -Match 'Available|Unavailable'
+        if ($result.Status -notmatch 'Available|Unavailable') {
+            throw 'Network status did not match expected values'
+        }
     }
 }

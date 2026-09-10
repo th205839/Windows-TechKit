@@ -11,27 +11,37 @@ Describe 'Windows-TechKit feature modules' {
 
     It 'builds branding information' {
         $branding = Get-TechKitBranding
-        $branding.Name | Should -Be 'Windows-TechKit'
+        if ($branding.Name -ne 'Windows-TechKit') {
+            throw 'Branding name did not match expectation'
+        }
     }
 
     It 'creates a client record' {
         $client = New-TechKitClient -Name 'Tech Support'
-        $client.Name | Should -Be 'Tech Support'
+        if ($client.Name -ne 'Tech Support') {
+            throw 'Client name did not match expectation'
+        }
     }
 
     It 'creates a usb layout' {
         $path = Join-Path $TestDrive 'usb-root'
         $layout = New-TechKitUsbLayout -RootPath $path
-        $layout.Directories | Should -Contain 'reports'
+        if ($layout.Directories -notcontains 'reports') {
+            throw 'USB layout did not include reports directory'
+        }
     }
 
     It 'collects inventory snapshot' {
         $snapshot = Get-InventorySnapshot
-        $snapshot.ComputerName | Should -Not -BeNullOrEmpty
+        if ([string]::IsNullOrWhiteSpace($snapshot.ComputerName)) {
+            throw 'ComputerName should not be empty'
+        }
     }
 
     It 'creates a support ticket' {
         $ticket = New-SupportTicket -ClientName 'Client' -Issue 'Needs assistance'
-        $ticket.Issue | Should -Be 'Needs assistance'
+        if ($ticket.Issue -ne 'Needs assistance') {
+            throw 'Support ticket issue did not match expectation'
+        }
     }
 }
