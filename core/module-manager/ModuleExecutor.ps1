@@ -5,7 +5,9 @@ function Invoke-TechKitModule {
     param(
         [Parameter(Mandatory)]
         [string]$Name,
-        [switch]$Apply
+        [switch]$Apply,
+        [switch]$Force,
+        [string]$ApplyToken
     )
 
     $root = Get-TechKitRepositoryRoot
@@ -51,48 +53,153 @@ function Invoke-TechKitModule {
         Status = 'Prepared'
     }
 
+    # If an apply was requested, validate token or force flag before executing destructive actions.
+    if ($Apply) {
+        $envToken = $env:TECHKIT_APPLY_TOKEN
+        if (-not $Force) {
+            if (-not $ApplyToken -and -not $envToken) {
+                throw "Apply requested but no ApplyToken provided and TECHKIT_APPLY_TOKEN is not set. Provide a token or use -Force to override."
+            }
+            if ($ApplyToken -and $envToken -and ($ApplyToken -ne $envToken)) {
+                throw "Apply token mismatch."
+            }
+        }
+        Write-TechLog -Message ("Apply requested for module {0}. Force={1}" -f $Name, $Force)
+    }
+
     try {
         switch ($Name.ToLower()) {
             'repair' {
                 if (Get-Command Invoke-FullWindowsRepair -ErrorAction SilentlyContinue) {
                     $plan = Invoke-FullWindowsRepair -DriveLetter 'C:'
                     $result.Plan = $plan
+                    if ($Apply) {
+                        try {
+                            Write-TechLog -Message 'Executing full repair (Apply)'
+                            $exec = Invoke-FullWindowsRepair -DriveLetter 'C:' -Apply:$Apply -ErrorAction Stop
+                            $result.Status = 'Executed'
+                            $result.Execution = $exec
+                        }
+                        catch {
+                            $result.Status = 'Failed'
+                            $result.ExecutionError = $_.Exception.Message
+                        }
+                    }
                 }
             }
             'network' {
                 if (Get-Command Test-NetworkStatus -ErrorAction SilentlyContinue) {
                     $status = Test-NetworkStatus
                     $result.StatusDetail = $status
+                    if ($Apply) {
+                        # Network module has no destructive default apply; if a function exists, call it.
+                        if (Get-Command Invoke-NetworkRepair -ErrorAction SilentlyContinue) {
+                            try {
+                                Write-TechLog -Message 'Executing network repair (Apply)'
+                                $exec = Invoke-NetworkRepair -ErrorAction Stop
+                                $result.Status = 'Executed'
+                                $result.Execution = $exec
+                            }
+                            catch {
+                                $result.Status = 'Failed'
+                                $result.ExecutionError = $_.Exception.Message
+                            }
+                        }
+                    }
                 }
             }
             'backup' {
                 if (Get-Command Start-SystemBackup -ErrorAction SilentlyContinue) {
-                    $sb = Start-SystemBackup -Destination '.\Backup' 
+                    $sb = Start-SystemBackup -Destination '.\\Backup' 
                     $result.StatusDetail = $sb
+                    if ($Apply) {
+                        try {
+                            Write-TechLog -Message 'Executing system backup (Apply)'
+                            $exec = Start-SystemBackup -Destination '.\\Backup' -Apply:$Apply -ErrorAction Stop
+                            $result.Status = 'Executed'
+                            $result.Execution = $exec
+                        }
+                        catch {
+                            $result.Status = 'Failed'
+                            $result.ExecutionError = $_.Exception.Message
+                        }
+                    }
                 }
             }
             'drivers' {
                 if (Get-Command Get-TechKitDriverInventory -ErrorAction SilentlyContinue) {
                     $drv = Get-TechKitDriverInventory
                     $result.StatusDetail = $drv
+                    if ($Apply) {
+                        if (Get-Command Invoke-TechKitDriverExport -ErrorAction SilentlyContinue) {
+                            try {
+                                Write-TechLog -Message 'Executing driver export (Apply)'
+                                $exec = Invoke-TechKitDriverExport -ErrorAction Stop
+                                $result.Status = 'Executed'
+                                $result.Execution = $exec
+                            }
+                            catch {
+                                $result.Status = 'Failed'
+                                $result.ExecutionError = $_.Exception.Message
+                            }
+                        }
+                    }
                 }
             }
             'security' {
                 if (Get-Command Invoke-SecurityActions -ErrorAction SilentlyContinue) {
                     $sec = Invoke-SecurityActions
                     $result.StatusDetail = $sec
+                    if ($Apply) {
+                        try {
+                            Write-TechLog -Message 'Executing security actions (Apply)'
+                            $exec = Invoke-SecurityActions -Apply:$Apply -ErrorAction Stop
+                            $result.Status = 'Executed'
+                            $result.Execution = $exec
+                        }
+                        catch {
+                            $result.Status = 'Failed'
+                            $result.ExecutionError = $_.Exception.Message
+                        }
+                    }
                 }
             }
             'updates' {
                 if (Get-Command Invoke-UpdateWorkflow -ErrorAction SilentlyContinue) {
                     $up = Invoke-UpdateWorkflow
                     $result.StatusDetail = $up
+                    if ($Apply) {
+                        try {
+                            Write-TechLog -Message 'Executing updates (Apply)'
+                            $exec = Invoke-UpdateWorkflow -Apply:$Apply -ErrorAction Stop
+                            $result.Status = 'Executed'
+                            $result.Execution = $exec
+                        }
+                        catch {
+                            $result.Status = 'Failed'
+                            $result.ExecutionError = $_.Exception.Message
+                        }
+                    }
                 }
             }
             'tweaks' {
                 if (Get-Command Invoke-TechKitTweaks -ErrorAction SilentlyContinue) {
                     $t = Invoke-TechKitTweaks
                     $result.StatusDetail = $t
+                    if ($Apply) {
+                        if (Get-Command Invoke-TechKitTweaksApply -ErrorAction SilentlyContinue) {
+                            try {
+                                Write-TechLog -Message 'Executing tweaks (Apply)'
+                                $exec = Invoke-TechKitTweaksApply -ErrorAction Stop
+                                $result.Status = 'Executed'
+                                $result.Execution = $exec
+                            }
+                            catch {
+                                $result.Status = 'Failed'
+                                $result.ExecutionError = $_.Exception.Message
+                            }
+                        }
+                    }
                 }
             }
             'inventory' {
@@ -106,6 +213,9 @@ function Invoke-TechKitModule {
                     $ticket = New-SupportTicket -ClientName 'System' -Issue 'Module prepare'
                     $result.StatusDetail = $ticket
                 }
+            }
+            Default {
+                $result.Note = 'No known fallback contract for this module.'
             }
             Default {
                 $result.Note = 'No known fallback contract for this module.'
