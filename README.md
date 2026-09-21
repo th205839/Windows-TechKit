@@ -59,3 +59,4 @@ This creates a Windows-TechKit folder on the target drive and prepares a structu
 ## Documentation
 - docs/ARCHITECTURE.md
 - docs/INTERNAL_REPORT.md
+- docs/APPLY.md — explains the prepare vs apply model, token authorization, examples, and safety guidance
